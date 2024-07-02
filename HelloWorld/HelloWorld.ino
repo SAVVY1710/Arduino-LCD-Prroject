@@ -1,3 +1,5 @@
+#include <Adafruit_LiquidCrystal.h>
+
 //2016.12.9
 
 /*
@@ -30,7 +32,9 @@
 
 // include the library code:
 #include <LiquidCrystal.h>
-
+int hour = 4;
+long min = 45;
+long sec;
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
 
@@ -38,7 +42,7 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd.print("Hello, World!");
+  lcd.print("Date: 7/2/2024");
 }
 
 void loop() {
@@ -46,6 +50,32 @@ void loop() {
   // (note: line 1 is the second row, since counting begins with 0):
   lcd.setCursor(0, 1);
   // print the number of seconds since reset:
-  lcd.print(millis() / 1000);
+  sec = (millis()/1000);
+  time();
+  lcd.print(hour);
+  lcd.print(":");
+  lcd.print(min);
+  lcd.print(":");
+  if(sec<10)
+  {
+    lcd.print(0);
+    lcd.print(sec%60);
+  }
+  else lcd.print(sec%60);
+  if(sec == 60)
+  {
+    min++;
+    sec = 0;
+  }
+  else if(min == 60)
+  {
+    hour++;
+    min = 0;
+    sec = 0;
+  }
+}
+void time()
+{
+
 }
 
