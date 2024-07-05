@@ -1,4 +1,8 @@
 #include <Adafruit_LiquidCrystal.h>
+#include <DHT.h>
+#define DHT11_PIN 2
+
+DHT dht(DHT11_PIN, DHT11); // Create an instance of the DHT class
 
 //2016.12.9
 
@@ -34,6 +38,7 @@
 #include <LiquidCrystal.h>
 int hour = 4;
 long min = 45;
+long tempchecker;
 long sec;
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
@@ -42,40 +47,51 @@ void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   // Print a message to the LCD.
-  lcd.print("Date: 7/2/2024");
+  Serial.begin(9600);
+  dht.begin(); // Initialize the sensor
 }
 
 void loop() {
+  float temperature = dht.readTemperature(); // Read temperature
+  float humidity = dht.readHumidity(); // Read humidity
+  lcd.print("Temp = ");
+  lcd.print(temperature);
+  Serial.print("Temperature = ");
+  Serial.println(temperature);
   // set the cursor to column 0, line 1
   // (note: line 1 is the second row, since counting begins with 0):
   lcd.setCursor(0, 1);
+  lcd.print("Humidity = ");
+  lcd.print(humidity);
+
   // print the number of seconds since reset:
-  sec = (millis()/1000);
-  time();
-  lcd.print(hour);
-  lcd.print(":");
-  lcd.print(min);
-  lcd.print(":");
+  sec = (millis()/1000) + 50;
+  //lcd.print(hour);
+  //lcd.print(":");
+  //lcd.print(min);
+  //lcd.print(":");
   if(sec<10)
   {
-    lcd.print(0);
-    lcd.print(sec%60);
+    //lcd.print(0);
+    //lcd.print(sec % 60);
   }
-  else lcd.print(sec%60);
-  if(sec == 60)
+  //else lcd.print(sec % 60);
+  if(sec%60 == 0 )
   {
-    min++;
-    sec = 0;
+    tempchecker++;
+    if(tempchecker == 1)checker();
+    if (sec%60)tempchecker = 0;
   }
-  else if(min == 60)
+  else if(min%60 == 0)
   {
     hour++;
     min = 0;
     sec = 0;
   }
 }
-void time()
+void checker()
 {
-
+  min++;
+  sec = 1;
 }
 
